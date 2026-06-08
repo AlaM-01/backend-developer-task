@@ -1,11 +1,12 @@
+
 import {
-  Table,
+  BelongsTo,
   Column,
   DataType,
-  PrimaryKey,
-  Model,
   ForeignKey,
-  BelongsTo,
+  Model,
+  PrimaryKey,
+  Table,
 } from 'sequelize-typescript';
 import { Shop } from 'src/modules/shops/shops.model';
 
@@ -23,17 +24,142 @@ export class Product extends Model<Product> {
   shopId: string;
 
   @BelongsTo(() => Shop)
-  shop?: Shop;
+  shop: Shop;
 
   @Column({ type: DataType.STRING(255), allowNull: false })
   name: string;
 
-  @Column({ type: DataType.TEXT, allowNull: false })
-  description: string;
+  @Column({ type: DataType.TEXT, allowNull: true })
+  description: string | null;
 
-  @Column({ type: DataType.INTEGER, allowNull: false })
+  @Column({ type: DataType.DECIMAL(10, 2), allowNull: false })
   price: number;
 
   @Column({ type: DataType.INTEGER, allowNull: false })
   stockCount: number;
 }
+
+//hakuna latest
+
+// import {
+//   BelongsTo,
+//   Column,
+//   DataType,
+//   ForeignKey,
+//   Model,
+//   PrimaryKey,
+//   Table,
+// } from 'sequelize-typescript';
+// import { Shop } from 'src/modules/shops/shops.model';
+
+// @Table({ tableName: 'products' })
+// export class Product extends Model<Product> {
+//   @PrimaryKey
+//   @Column({
+//     type: DataType.UUID,
+//     defaultValue: DataType.UUIDV4,
+//   })
+//   id: string;
+
+//   @ForeignKey(() => Shop)
+//   @Column({ type: DataType.UUID, allowNull: false })
+//   shopId: string;
+
+//   @BelongsTo(() => Shop)
+//   shop: Shop;
+
+//   @Column({ type: DataType.STRING(255), allowNull: false })
+//   name: string;
+
+//   @Column({ type: DataType.TEXT, allowNull: false })
+//   description: string;
+
+//   @Column({ type: DataType.INTEGER, allowNull: false })
+//   price: number;
+
+//   @Column({ type: DataType.INTEGER, allowNull: false })
+//   stockCount: number;
+// }
+
+//last code update
+
+// import {
+//   BelongsTo,
+//   Column,
+//   DataType,
+//   ForeignKey,
+//   Model,
+//   PrimaryKey,
+//   Table,
+// } from 'sequelize-typescript';
+// import { Shop } from 'src/modules/shops/shops.model';
+
+// @Table({ tableName: 'products' })
+// export class Product extends Model<Product> {
+//   @PrimaryKey
+//   @Column({
+//     type: DataType.UUID,
+//     defaultValue: DataType.UUIDV4,
+//   })
+//   id: string;
+
+//   @ForeignKey(() => Shop)
+//   @Column({ type: DataType.UUID, allowNull: false })
+//   shopId: string;
+
+//   @BelongsTo(() => Shop)
+//   shop?: Shop;
+
+//   @Column({ type: DataType.STRING(255), allowNull: false })
+//   name: string;
+
+//   @Column({ type: DataType.TEXT, allowNull: false })
+//   description: string;
+
+//   @Column({ type: DataType.INTEGER, allowNull: false })
+//   price: number;
+
+//   @Column({ type: DataType.INTEGER, allowNull: false })
+//   stockCount: number;
+// }
+
+
+// import {
+//   Table,
+//   Column,
+//   DataType,
+//   PrimaryKey,
+//   Model,
+//   ForeignKey,
+//   BelongsTo,
+// } from 'sequelize-typescript';
+// import { Shop } from 'src/modules/shops/shops.model';
+
+// @Table({ tableName: 'products' })
+// export class Product extends Model<Product> {
+//   @PrimaryKey
+//   @Column({
+//     type: DataType.UUID,
+//     defaultValue: DataType.UUIDV4,
+//   })
+//   id: string;
+
+//   @ForeignKey(() => Shop)
+//   @Column({ type: DataType.UUID, allowNull: false })
+//   shopId: string;
+
+//   @BelongsTo(() => Shop)
+//   shop?: Shop;
+
+//   @Column({ type: DataType.STRING(255), allowNull: false })
+//   name: string;
+
+//   @Column({ type: DataType.TEXT, allowNull: false })
+//   description: string;
+
+//   @Column({ type: DataType.INTEGER, allowNull: false })
+//   price: number;
+
+//   @Column({ type: DataType.INTEGER, allowNull: false })
+//   stockCount: number;
+// }

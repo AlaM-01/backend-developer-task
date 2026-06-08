@@ -1,5 +1,4 @@
-import { Injectable } from '@nestjs/common';
-import { ProductsService } from 'src/modules/products/products.service';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateShopDTO } from 'src/modules/shops/dto/create-shop.dto';
 import { ShopWithProductsDTO } from 'src/modules/shops/dto/shop-with-products.dto';
 import { ShopDTO } from 'src/modules/shops/dto/shop.dto';
@@ -8,51 +7,162 @@ import { ShopsRepository } from 'src/modules/shops/shops.repository';
 
 @Injectable()
 export class ShopsService {
-  constructor(
-    private readonly repository: ShopsRepository,
-    private readonly productsService: ProductsService,
-  ) {}
+  constructor(private readonly repository: ShopsRepository) {}
 
   async create(shop: CreateShopDTO): Promise<ShopDTO> {
-    return this.repository.create(shop);
+    return this.repository.create(shop as any);
   }
 
-  async findAll(): Promise<ShopDTO[]> {
-    return this.repository.findAll();
+  async findAll(limit?: number, offset?: number): Promise<ShopDTO[]> {
+    return this.repository.findAll(limit, offset);
   }
 
   /**
-   * This method finds all shops with their products
-   * @returns All shops with their products
+   * Fetches all shops with their products.
+   * Uses separate:true in the repository to avoid JOIN row duplication.
+   * Paginated to prevent loading the full dataset into memory.
    */
-  async findAllWithProducts(): Promise<ShopWithProductsDTO[]> {
-    const everything = await this.repository.findAll();
+  async findAllWithProducts(
+    limit?: number,
+    offset?: number,
+  ): Promise<ShopWithProductsDTO[]> {
+    const shops = await this.repository.findAllWithProducts(limit, offset);
 
-    const arr = [];
-
-    for (let i = 0; i < everything.length; i++) {
-      const shop = everything[i];
-      const products = await this.productsService.findWithFilter({
-        shopId: shop.id,
-      });
-      arr.push({
-        ...shop,
-        products,
-      });
-    }
-
-    return arr;
+    return shops.map((shop: any) => ({
+      ...shop.toJSON(),
+      products: shop.products ?? [],
+    }));
   }
 
   async findOne(id: string): Promise<ShopDTO> {
-    return this.repository.findOne(id);
+    const shop = await this.repository.findOne(id);
+
+    if (!shop) {
+      throw new NotFoundException(`Shop with id ${id} not found`);
+    }
+
+    return shop;
   }
 
   async update(id: string, shop: UpdateShopDTO): Promise<ShopDTO> {
-    return this.repository.update(id, shop);
+    await this.findOne(id);
+    return this.repository.update(id, shop as any);
   }
 
-  async delete(id: string) {
+  async delete(id: string): Promise<void> {
+    await this.findOne(id);
     return this.repository.delete(id);
   }
 }
+
+//hakuna 
+
+// import { Injectable } from '@nestjs/common';
+// import { CreateShopDTO } from 'src/modules/shops/dto/create-shop.dto';
+// import { ShopWithProductsDTO } from 'src/modules/shops/dto/shop-with-products.dto';
+// import { ShopDTO } from 'src/modules/shops/dto/shop.dto';
+// import { UpdateShopDTO } from 'src/modules/shops/dto/update-shop.dto';
+// import { ShopsRepository } from 'src/modules/shops/shops.repository';
+
+// @Injectable()
+// export class ShopsService {
+//   constructor(private readonly repository: ShopsRepository) {}
+
+//   async create(shop: CreateShopDTO): Promise<ShopDTO> {
+//     return this.repository.create(shop);
+//   }
+
+//   // async findAll(): Promise<ShopDTO[]> {
+//   //   return this.repository.findAll();
+//   // }
+// async findAll(limit?: number, offset?: number): Promise<ShopDTO[]> {
+//   return this.repository.findAll(limit, offset);
+// }
+
+//   /**
+//    * OPTIMIZED: single DB query with JOIN
+//    */
+// // async findAllWithProducts(): Promise<ShopWithProductsDTO[]> {
+// //   return this.repository.findAllWithProducts();
+// // }
+// async findAllWithProducts(): Promise<ShopWithProductsDTO[]> {
+//   const shops = await this.repository.findAllWithProducts();
+
+//   return shops.map((shop: any) => ({
+//     ...shop.toJSON(),
+//     products: shop.products ?? [],
+//   }));
+// }
+
+//   async findOne(id: string): Promise<ShopDTO> {
+//     return this.repository.findOne(id);
+//   }
+
+//   async update(id: string, shop: UpdateShopDTO): Promise<ShopDTO> {
+//     return this.repository.update(id, shop);
+//   }
+
+//   async delete(id: string) {
+//     return this.repository.delete(id);
+//   }
+// }
+
+
+// import { Injectable } from '@nestjs/common';
+// import { ProductsService } from 'src/modules/products/products.service';
+// import { CreateShopDTO } from 'src/modules/shops/dto/create-shop.dto';
+// import { ShopWithProductsDTO } from 'src/modules/shops/dto/shop-with-products.dto';
+// import { ShopDTO } from 'src/modules/shops/dto/shop.dto';
+// import { UpdateShopDTO } from 'src/modules/shops/dto/update-shop.dto';
+// import { ShopsRepository } from 'src/modules/shops/shops.repository';
+
+// @Injectable()
+// export class ShopsService {
+//   constructor(
+//     private readonly repository: ShopsRepository,
+//     private readonly productsService: ProductsService,
+//   ) {}
+
+//   async create(shop: CreateShopDTO): Promise<ShopDTO> {
+//     return this.repository.create(shop);
+//   }
+
+//   async findAll(): Promise<ShopDTO[]> {
+//     return this.repository.findAll();
+//   }
+
+//   /**
+//    * This method finds all shops with their products
+//    * @returns All shops with their products
+//    */
+//   async findAllWithProducts(): Promise<ShopWithProductsDTO[]> {
+//     const everything = await this.repository.findAll();
+
+//     const arr = [];
+
+//     for (let i = 0; i < everything.length; i++) {
+//       const shop = everything[i];
+//       const products = await this.productsService.findWithFilter({
+//         shopId: shop.id,
+//       });
+//       arr.push({
+//         ...shop,
+//         products,
+//       });
+//     }
+
+//     return arr;
+//   }
+
+//   async findOne(id: string): Promise<ShopDTO> {
+//     return this.repository.findOne(id);
+//   }
+
+//   async update(id: string, shop: UpdateShopDTO): Promise<ShopDTO> {
+//     return this.repository.update(id, shop);
+//   }
+
+//   async delete(id: string) {
+//     return this.repository.delete(id);
+//   }
+// }
