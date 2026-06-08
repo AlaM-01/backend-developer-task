@@ -13,7 +13,7 @@ export class ProductsService {
   constructor(private readonly repository: ProductsRepository) {}
 
   /**
-   * Create product with business rule validation
+   * Create product + business rule validation
    */
   async create(dto: CreateProductDTO): Promise<ProductDTO> {
     // Defensive rule (even though DTO already enforces it)
@@ -25,7 +25,7 @@ export class ProductsService {
   }
 
   /**
-   * Get all products with optional case-insensitive search
+   * Get all products + case insensitive search
    */
   async findAll(search?: string): Promise<ProductDTO[]> {
     return this.repository.findAll(search);
@@ -66,62 +66,11 @@ export class ProductsService {
     return this.repository.delete(id);
   }
 
-  /**
-   * Generic filter (used by shops module likely)
+ /**
+   * generic filter?
    */
+
   async findWithFilter(filter: Partial<ProductDTO>): Promise<ProductDTO[]> {
     return this.repository.findWithFilter(filter);
   }
 }
-
-
-// import { Injectable, NotFoundException } from '@nestjs/common';
-// import { ProductsRepository } from 'src/modules/products/products.repository';
-
-// @Injectable()
-// export class ProductsService {
-//   constructor(private readonly repository: ProductsRepository) {}
-
-//   async create(dto: any) {
-//     return this.repository.create(dto);
-//   }
-
-//   async findAll(search?: string) {
-//     return this.repository.findAll(search);
-//   }
-
-//   async findOne(id: string) {
-//     const product = await this.repository.findById(id);
-//     if (!product) throw new NotFoundException('Product not found');
-//     return product;
-//   }
-
-//   async update(id: string, dto: any) {
-//     await this.findOne(id);
-//     return this.repository.update(id, dto);
-//   }
-
-//   async delete(id: string) {
-//     await this.findOne(id);
-//     return this.repository.delete(id);
-//   }
-
-//   async findWithFilter(filter: any) {
-//   return this.repository.findWithFilter(filter);
-// }
-
-// }
-
-
-// import { Injectable } from '@nestjs/common';
-// import { ProductsRepository } from 'src/modules/products/products.repository';
-// import { ProductDTO } from 'src/modules/products/dto/product.dto';
-
-// @Injectable()
-// export class ProductsService {
-//   constructor(private readonly repository: ProductsRepository) {}
-
-//   async findWithFilter(filter: Partial<ProductDTO>): Promise<ProductDTO[]> {
-//     return this.repository.findWithFilter(filter);
-//   }
-// }

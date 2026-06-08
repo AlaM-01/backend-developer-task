@@ -13,12 +13,12 @@ export class MembersService {
   constructor(private readonly repository: MembersRepository) {}
 
   /**
-   * Creates a new member.
-   * Enforces family member business rules when centralMemberId is provided.
+   * Creates new member
+   * Enforces family member business rules when centralMemberId is provided
    *
-   * @param {CreateMemberDTO} member - The member data to create.
-   * @returns {Promise<MemberDTO>} The created member.
-   * @throws {BadRequestException} If any family member business rule is violated.
+   * @param {CreateMemberDTO} member 
+   * @returns {Promise<MemberDTO>} 
+   * @throws {BadRequestException} 
    */
   async create(member: CreateMemberDTO): Promise<MemberDTO> {
     if (member.centralMemberId) {
@@ -31,8 +31,8 @@ export class MembersService {
   /**
    * Returns a paginated list of members.
    *
-   * @param {number} page - Page number (1-based).
-   * @param {number} limit - Number of records per page.
+   * @param {number} page 
+   * @param {number} limit 
    * @returns {Promise<{ data: MemberDTO[]; total: number; page: number; limit: number }>}
    */
   async findAll(
@@ -54,9 +54,9 @@ export class MembersService {
    * Fetches a single member by ID.
    * Throws 404 if not found.
    *
-   * @param {string} id - Member ID.
-   * @returns {Promise<MemberDTO>} The found member.
-   * @throws {NotFoundException} If member does not exist.
+   * @param {string} id 
+   * @returns {Promise<MemberDTO>} 
+   * @throws {NotFoundException} 
    */
   async findOne(id: string): Promise<MemberDTO> {
     const member = await this.repository.findOne(id);
@@ -70,13 +70,13 @@ export class MembersService {
 
   /**
    * Updates a member by ID.
-   * Enforces family member business rules when centralMemberId is provided.
+   * Enforces family member business rules when centralMemberId is provided
    *
-   * @param {string} id - Member ID.
-   * @param {UpdateMemberDTO} member - Fields to update.
-   * @returns {Promise<MemberDTO>} The updated member.
-   * @throws {NotFoundException} If member does not exist.
-   * @throws {BadRequestException} If any family member business rule is violated.
+   * @param {string} id 
+   * @param {UpdateMemberDTO} member 
+   * @returns {Promise<MemberDTO>}
+   * @throws {NotFoundException} 
+   * @throws {BadRequestException} 
    */
   async update(id: string, member: UpdateMemberDTO): Promise<MemberDTO> {
     await this.findOne(id);
@@ -89,12 +89,11 @@ export class MembersService {
   }
 
   /**
-   * Deletes a member by ID.
-   * Throws 404 if not found.
+   * Deletes a member by ID
    *
-   * @param {string} id - Member ID.
+   * @param {string} id
    * @returns {Promise<void>}
-   * @throws {NotFoundException} If member does not exist.
+   * @throws {NotFoundException} 
    */
   async delete(id: string): Promise<void> {
     await this.findOne(id);
@@ -105,11 +104,11 @@ export class MembersService {
    * Links an existing member as a family member of a central member.
    * Enforces all family member business rules.
    *
-   * @param {string} centralMemberId - ID of the central member.
-   * @param {string} memberId - ID of the member to link.
-   * @returns {Promise<MemberDTO>} The updated member.
-   * @throws {BadRequestException} If any business rule is violated.
-   * @throws {NotFoundException} If either member does not exist.
+   * @param {string} centralMemberId 
+   * @param {string} memberId
+   * @returns {Promise<MemberDTO>} 
+   * @throws {BadRequestException} 
+   * @throws {NotFoundException} 
    */
   async addFamilyMember(
     centralMemberId: string,
@@ -122,11 +121,11 @@ export class MembersService {
   /**
    * Unlinks a family member from a central member.
    *
-   * @param {string} centralMemberId - ID of the central member.
-   * @param {string} memberId - ID of the family member to unlink.
+   * @param {string} centralMemberId 
+   * @param {string} memberId 
    * @returns {Promise<void>}
-   * @throws {NotFoundException} If either member does not exist.
-   * @throws {BadRequestException} If the member is not linked to this central member.
+   * @throws {NotFoundException} 
+   * @throws {BadRequestException} 
    */
   async removeFamilyMember(
     centralMemberId: string,
@@ -149,19 +148,19 @@ export class MembersService {
 
   /**
    * Validates family member business rules:
-   * 1. A member cannot be their own central member.
-   * 2. A central member cannot itself be a family member (no chaining).
+   * - A member cannot be their own central member
+   * - central member cannot itself be a family member 
    *
-   * @param {string | null} memberId - ID of the member being created/updated (null on create).
-   * @param {string} centralMemberId - ID of the proposed central member.
-   * @throws {BadRequestException} If any rule is violated.
-   * @throws {NotFoundException} If the central member does not exist.
+   * @param {string | null} memberId 
+   * @param {string} centralMemberId 
+   * @throws {BadRequestException}
+   * @throws {NotFoundException} 
    */
   private async validateFamilyMemberRules(
     memberId: string | null,
     centralMemberId: string,
   ): Promise<void> {
-    // Rule 1: a member cannot be their own central member
+    // Rule 1: a member cant be their own central member
     if (memberId && memberId === centralMemberId) {
       throw new BadRequestException(
         'A member cannot be their own central member',
@@ -177,7 +176,7 @@ export class MembersService {
       );
     }
 
-    // Rule 2: the central member cannot itself be a family member (no chaining)
+    // Rule 2: the central member cant itself be a family member
     if ((centralMember as any).centralMemberId) {
       throw new BadRequestException(
         'A family member cannot be a central member',
@@ -185,45 +184,3 @@ export class MembersService {
     }
   }
 }
-
-//hakuna 
-// import { Injectable } from '@nestjs/common';
-// import { CreateMemberDTO } from 'src/modules/members/dto/create-member.dto';
-// import { MemberDTO } from 'src/modules/members/dto/member.dto';
-// import { UpdateMemberDTO } from 'src/modules/members/dto/update-member.dto';
-// import { MembersRepository } from 'src/modules/members/members.repository';
-
-// @Injectable()
-// export class MembersService {
-//   constructor(private readonly repository: MembersRepository) {}
-
-//   /**
-//    * This method creates a new member
-//    * @param member - The member to create
-//    * @returns The created member
-//    */
-//   async create(member: CreateMemberDTO): Promise<MemberDTO> {
-//     return this.repository.create(member);
-//   }
-
-//   /**
-//    * This method finds all members
-//    * FIXME: A club can have more than 100k members, wow!
-//    * Can we find a way to return the members in an efficient way?
-//    */
-//   async findAll(): Promise<MemberDTO[]> {
-//     return this.repository.findAll();
-//   }
-
-//   async findOne(id: string): Promise<MemberDTO> {
-//     return this.repository.findOne(id);
-//   }
-
-//   async update(id: string, member: UpdateMemberDTO): Promise<MemberDTO> {
-//     return this.repository.update(id, member);
-//   }
-
-//   async delete(id: string): Promise<void> {
-//     return this.repository.delete(id);
-//   }
-// }
