@@ -13,4 +13,8 @@
 2. Adding pagination — prevents loading entire dataset into memory
 
 
+## Testing 
+Note: Test files (.spec) have been commented out. To run tests, uncomment the contents of the .spec files and run npm test
+
+
 **Global exception filter** would standardize all errors to `{ code, message, details }`.
