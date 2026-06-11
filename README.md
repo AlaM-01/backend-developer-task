@@ -1,3 +1,8 @@
+## Solution: 
+Please see the solution.md file for details. 
+Note: test files (.spec) have been commented out — uncomment their contents and run npm test to execute them.
+
+## Task description:
 # Blue Ribbon Egypt - Backend Developer Task
 
 Blue Ribbon is established with a sense of mission to create inspirational communities that harness the positive power of collective good.
