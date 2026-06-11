@@ -1,6 +1,7 @@
 ## Solution: 
 Please see the solution.md file for details. 
-Note: test files (.spec) have been commented out — uncomment their contents and run npm test to execute them.
+
+Note: Test files (.spec) have been commented out. Uncomment their contents and run `npm test` to execute them.
 
 ## Task description:
 # Blue Ribbon Egypt - Backend Developer Task
